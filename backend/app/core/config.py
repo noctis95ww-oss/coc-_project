@@ -1,10 +1,12 @@
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import BaseSettings, Field
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
     ENVIRONMENT: Literal["development", "production", "test"] = Field(
         default="development", description="Runtime environment label"
     )
@@ -14,11 +16,6 @@ class Settings(BaseSettings):
         default=None,
         description="Optional OpenAI API key used for narrative generation",
     )
-
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-
 
 @lru_cache
 def get_settings() -> Settings:
